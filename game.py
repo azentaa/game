@@ -1,7 +1,7 @@
 import pygame
-from random import randrange
 import os
 import sys
+from random import randrange
 
 pygame.init()
 all_sprites = pygame.sprite.Group()
@@ -12,7 +12,6 @@ screen = pygame.display.set_mode(size)
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
-    # если файл не существует, то выходим
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
@@ -20,11 +19,27 @@ def load_image(name, colorkey=None):
     return image
 
 
+class Enemy(pygame.sprite.Sprite):
+    image = load_image("test.png")
+
+    # image_boom = load_image("boom.png")
+
+    def __init__(self, group):
+        super().__init__(group)
+        self.image = Enemy.image
+        self.rect = self.image.get_rect()
+        self.rect.x = width
+        self.rect.y = randrange(height)
+
+    def update(self, *args):
+        self.rect = self.rect.move(1, 0)
+
+
 class Player(pygame.sprite.Sprite):
     image = load_image("test.png")
 
-    def __init__(self, pos):
-        super().__init__(all_sprites)
+    def __init__(self, pos, *group):
+        super().__init__(*group)
         self.image = Player.image
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
@@ -33,20 +48,21 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.rect = self.rect.move(0, 1)
 
-
-player = Player((10, 10))
+SPAWNENEMY = pygame.USEREVENT + 1
+pygame.time.set_timer(SPAWNENEMY, 1)
 background = load_image("background.png")
+Player((10, 10), all_sprites)
+running = True
+while running:
+    # внутри игрового цикла ещё один цикл
+    # приема и обработки сообщений
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == SPAWNENEMY:
+            Enemy(all_sprites)
 
-if __name__ == '__main__':
-
-    running = True
-    while running:
-        # внутри игрового цикла ещё один цикл
-        # приема и обработки сообщений
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-            all_sprites.draw(screen)
-            all_sprites.update()
-    pygame.quit()
+        screen.blit(background, (0, 0))
+        all_sprites.draw(screen)
+        all_sprites.update()
+pygame.quit()
