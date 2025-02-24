@@ -68,7 +68,6 @@ class Player(pygame.sprite.Sprite):
                 self.rect = self.rect.move(0, -1)
 
 
-
 Border(3, 3, width - 3, 3)
 Border(3, height - 3, width - 3, height - 3)
 Border(3, 3, 3, height - 3)
@@ -78,8 +77,6 @@ background = load_image("background.png")
 Player((10, 10), all_sprites)
 running = True
 while running:
-    # внутри игрового цикла ещё один цикл
-    # приема и обработки сообщений
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
