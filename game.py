@@ -8,6 +8,8 @@ all_sprites = pygame.sprite.Group()
 pygame.display.set_caption("Игра")
 size = width, height = 800, 400
 screen = pygame.display.set_mode(size)
+horizontal_borders = pygame.sprite.Group()
+vertical_borders = pygame.sprite.Group()
 
 
 def load_image(name, colorkey=None):
@@ -35,6 +37,19 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.rect.move(1, 0)
 
 
+class Border(pygame.sprite.Sprite):
+    def __init__(self, x1, y1, x2, y2):
+        super().__init__(all_sprites)
+        if x1 == x2:
+            self.add(vertical_borders)
+            self.image = pygame.Surface([1, y2 - y1])
+            self.rect = pygame.Rect(x1, y1, 1, y2 - y1)
+        else:
+            self.add(horizontal_borders)
+            self.image = pygame.Surface([x2 - x1, 1])
+            self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
+
+
 class Player(pygame.sprite.Sprite):
     image = load_image("test.png")
 
@@ -45,9 +60,18 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = pos[0]
         self.rect.y = pos[1]
 
-    def update(self):
-        self.rect = self.rect.move(0, 1)
+    def update(self, *args):
+        if not pygame.sprite.spritecollideany(self, horizontal_borders):
+            if args and args[0].type == pygame.MOUSEBUTTONDOWN:
+                self.rect = self.rect.move(0, 1)
+            else:
+                self.rect = self.rect.move(0, -1)
 
+
+
+Border(3, 3, width - 3, 3)
+Border(3, height - 3, width - 3, height - 3)
+Border(3, 3, 3, height - 3)
 SPAWNENEMY = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWNENEMY, 1)
 background = load_image("background.png")
