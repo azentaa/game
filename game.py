@@ -79,6 +79,8 @@ pygame.time.set_timer(SPAWNENEMY, 3000)
 background = load_image("background.png")
 player_sprite = pygame.sprite.Sprite()
 Player((10, 10), all_sprites)
+fps = 30
+clock = pygame.time.Clock()
 running = True
 
 while running:
@@ -88,8 +90,11 @@ while running:
         if event.type == SPAWNENEMY:
             Enemy(all_sprites)
 
-        screen.blit(background, (0, 0))
-        all_sprites.draw(screen)
-        all_sprites.update()
+
+    screen.blit(background, (0, 0))
+    all_sprites.draw(screen)
+    all_sprites.update()
+    clock.tick(fps)
+
     pygame.display.flip()
 pygame.quit()
