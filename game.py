@@ -4,16 +4,19 @@ import sys
 from random import randrange
 
 pygame.init()
-player_sprite = pygame.sprite.Group()
-all_sprites = pygame.sprite.Group()
-pygame.display.set_caption("Игра")
+# создаем экран
+pygame.display.set_caption("Игра в рыбку")
 size = width, height = 900, 800
 screen = pygame.display.set_mode(size)
+# создаем группы спрайтов
 horizontal_borders = pygame.sprite.Group()
 vertical_borders = pygame.sprite.Group()
 enemy_sprites = pygame.sprite.Group()
+player_sprite = pygame.sprite.Group()
+all_sprites = pygame.sprite.Group()
 
 
+# функции
 def terminate():
     pygame.quit()
     sys.exit()
@@ -28,6 +31,7 @@ def load_image(name, colorkey=None):
     return image
 
 
+# классы
 class Enemy(pygame.sprite.Sprite):
     image = load_image("test.png")
 
@@ -78,16 +82,20 @@ class Player(pygame.sprite.Sprite):
             terminate()
 
 
+background = load_image("background.png")
 Border(10, 10, width - 10, 10)
 Border(10, height - 10, width - 10, height - 10)
 Border(10, 10, 10, height - 10)
+Player((150, 100), all_sprites, player_sprite)
+
 SPAWNENEMY = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWNENEMY, 1000)
-background = load_image("background.png")
-Player((150, 100), all_sprites, player_sprite)
+
 fps = 30
 clock = pygame.time.Clock()
+
 running = True
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
