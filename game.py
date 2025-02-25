@@ -7,7 +7,7 @@ pygame.init()
 player_sprite = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 pygame.display.set_caption("Игра")
-size = width, height = 1000, 800
+size = width, height = 900, 800
 screen = pygame.display.set_mode(size)
 horizontal_borders = pygame.sprite.Group()
 vertical_borders = pygame.sprite.Group()
@@ -35,10 +35,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y = randrange(height)
         self.group = group
 
-
-
     def update(self, *args):
-
         self.rect = self.rect.move(-10, 0)
 
 
@@ -68,8 +65,10 @@ class Player(pygame.sprite.Sprite):
     def update(self, *args):
         if args and args[0].type == pygame.MOUSEMOTION:
             self.rect.y = args[0].pos[1]
-        #else:
-            #self.rect = self.rect.move(0, -1)
+        if self.rect.y > width - 200:
+            self.rect.y = width - 210
+        if self.rect.y < 10:
+            self.rect.y = 10
 
 
 Border(10, 10, width - 10, 10)
