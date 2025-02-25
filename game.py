@@ -11,6 +11,12 @@ size = width, height = 900, 800
 screen = pygame.display.set_mode(size)
 horizontal_borders = pygame.sprite.Group()
 vertical_borders = pygame.sprite.Group()
+enemy_sprites = pygame.sprite.Group()
+
+
+def terminate():
+    pygame.quit()
+    sys.exit()
 
 
 def load_image(name, colorkey=None):
@@ -27,13 +33,12 @@ class Enemy(pygame.sprite.Sprite):
 
     # image_boom = load_image("boom.png")
 
-    def __init__(self, group):
-        super().__init__(group)
+    def __init__(self, *group):
+        super().__init__(*group)
         self.image = Enemy.image
         self.rect = self.image.get_rect()
         self.rect.x = width - 200
         self.rect.y = randrange(height)
-        self.group = group
 
     def update(self, *args):
         self.rect = self.rect.move(-10, 0)
@@ -69,6 +74,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = width - 210
         if self.rect.y < 10:
             self.rect.y = 10
+        if pygame.sprite.spritecollideany(self, enemy_sprites):
+            terminate()
 
 
 Border(10, 10, width - 10, 10)
@@ -86,7 +93,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == SPAWNENEMY:
-            Enemy(all_sprites)
+            Enemy(all_sprites, enemy_sprites)
         if event.type == pygame.MOUSEMOTION:
             player_sprite.update(event)
 
