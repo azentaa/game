@@ -4,9 +4,10 @@ import sys
 from random import randrange
 
 pygame.init()
+player_sprite = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 pygame.display.set_caption("Игра")
-size = width, height = 800, 400
+size = width, height = 1000, 800
 screen = pygame.display.set_mode(size)
 horizontal_borders = pygame.sprite.Group()
 vertical_borders = pygame.sprite.Group()
@@ -64,11 +65,10 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = pos[1]
 
     def update(self, *args):
-        if not pygame.sprite.spritecollideany(self, horizontal_borders):
-            if args and args[0].type == pygame.MOUSEBUTTONDOWN:
-                self.rect = self.rect.move(0, 1)
-            else:
-                self.rect = self.rect.move(0, -1)
+        if args and args[0].type == pygame.MOUSEMOTION:
+            self.rect.y = args[0].pos[1]
+        #else:
+            #self.rect = self.rect.move(0, -1)
 
 
 Border(3, 3, width - 3, 3)
@@ -77,19 +77,18 @@ Border(3, 3, 3, height - 3)
 SPAWNENEMY = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWNENEMY, 3000)
 background = load_image("background.png")
-player_sprite = pygame.sprite.Sprite()
-Player((10, 10), all_sprites)
+Player((150, 100), all_sprites)
 fps = 30
 clock = pygame.time.Clock()
 running = True
-
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == SPAWNENEMY:
             Enemy(all_sprites)
-
+        if event.type == pygame.MOUSEMOTION:
+            all_sprites.update(event)
 
     screen.blit(background, (0, 0))
     all_sprites.draw(screen)
