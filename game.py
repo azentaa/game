@@ -21,7 +21,12 @@ def terminate():
     pygame.quit()
     sys.exit()
 
-
+def text_set():
+    font = pygame.font.Font(None, 50)
+    text = font.render(str(round(timer / fps, 1)), 1, (100, 255, 100))
+    text_x = width - 50
+    text_y = 50
+    screen.blit(text, (text_x, text_y))
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     if not os.path.isfile(fullname):
@@ -33,8 +38,9 @@ def load_image(name, colorkey=None):
 
 # классы
 class Enemy(pygame.sprite.Sprite):
-    image = load_image("test.png")
-
+    image1 = load_image("enemy_sprite.png")
+    image = pygame.transform.scale(image1, (100, 100))
+    image.convert_alpha()
     # image_boom = load_image("boom.png")
 
     def __init__(self, *group):
@@ -43,6 +49,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = width - 200
         self.rect.y = randrange(height)
+        self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, *args):
         self.rect = self.rect.move(-10, 0)
@@ -62,14 +69,16 @@ class Border(pygame.sprite.Sprite):
 
 
 class Player(pygame.sprite.Sprite):
-    image = load_image("test.png")
-
+    image1 = load_image("player_sprite.png")
+    image = pygame.transform.scale(image1, (100, 100))
+    image.convert_alpha()
     def __init__(self, pos, *group):
         super().__init__(*group)
         self.image = Player.image
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
+        self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, *args):
         if args and args[0].type == pygame.MOUSEMOTION:
@@ -91,7 +100,12 @@ Player((150, 100), all_sprites, player_sprite)
 SPAWNENEMY = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWNENEMY, 1000)
 
+
+text_x = width - 50
+text_y = 50
+font = pygame.font.Font(None, 50)
 fps = 30
+timer = 0
 clock = pygame.time.Clock()
 
 running = True
@@ -104,7 +118,11 @@ while running:
             Enemy(all_sprites, enemy_sprites)
         if event.type == pygame.MOUSEMOTION:
             player_sprite.update(event)
-
+            print(a)
+    timer += 1
+    a = str(round(timer / fps, 1))
+    text = font.render(a, 1, (0, 0, 0))
+    screen.blit(text, (text_x, text_y))
     screen.blit(background, (0, 0))
     all_sprites.draw(screen)
     all_sprites.update()
