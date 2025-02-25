@@ -30,11 +30,14 @@ class Enemy(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = Enemy.image
         self.rect = self.image.get_rect()
-        self.rect.x = width
+        self.rect.x = width - 200
         self.rect.y = randrange(height)
+        self.group = group
+
+
 
     def update(self, *args):
-        self.rect = self.rect.move(1, 0)
+        self.rect = self.rect.move(-1, 0)
 
 
 class Border(pygame.sprite.Sprite):
@@ -72,10 +75,12 @@ Border(3, 3, width - 3, 3)
 Border(3, height - 3, width - 3, height - 3)
 Border(3, 3, 3, height - 3)
 SPAWNENEMY = pygame.USEREVENT + 1
-pygame.time.set_timer(SPAWNENEMY, 1)
+pygame.time.set_timer(SPAWNENEMY, 3000)
 background = load_image("background.png")
+player_sprite = pygame.sprite.Sprite()
 Player((10, 10), all_sprites)
 running = True
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -86,4 +91,5 @@ while running:
         screen.blit(background, (0, 0))
         all_sprites.draw(screen)
         all_sprites.update()
+    pygame.display.flip()
 pygame.quit()
