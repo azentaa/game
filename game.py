@@ -38,7 +38,8 @@ class Enemy(pygame.sprite.Sprite):
 
 
     def update(self, *args):
-        self.rect = self.rect.move(-1, 0)
+
+        self.rect = self.rect.move(-10, 0)
 
 
 class Border(pygame.sprite.Sprite):
@@ -71,13 +72,13 @@ class Player(pygame.sprite.Sprite):
             #self.rect = self.rect.move(0, -1)
 
 
-Border(3, 3, width - 3, 3)
-Border(3, height - 3, width - 3, height - 3)
-Border(3, 3, 3, height - 3)
+Border(10, 10, width - 10, 10)
+Border(10, height - 10, width - 10, height - 10)
+Border(10, 10, 10, height - 10)
 SPAWNENEMY = pygame.USEREVENT + 1
-pygame.time.set_timer(SPAWNENEMY, 3000)
+pygame.time.set_timer(SPAWNENEMY, 1000)
 background = load_image("background.png")
-Player((150, 100), all_sprites)
+Player((150, 100), all_sprites, player_sprite)
 fps = 30
 clock = pygame.time.Clock()
 running = True
@@ -88,7 +89,7 @@ while running:
         if event.type == SPAWNENEMY:
             Enemy(all_sprites)
         if event.type == pygame.MOUSEMOTION:
-            all_sprites.update(event)
+            player_sprite.update(event)
 
     screen.blit(background, (0, 0))
     all_sprites.draw(screen)
