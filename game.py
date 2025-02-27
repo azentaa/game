@@ -39,7 +39,7 @@ def load_image(name, colorkey=None):
 # классы
 class Enemy(pygame.sprite.Sprite):
     image1 = load_image("enemy_sprite.png")
-    image = pygame.transform.scale(image1, (100, 100))
+    image = pygame.transform.scale(image1, (50, 50))
     image.convert_alpha()
     # image_boom = load_image("boom.png")
 
@@ -70,7 +70,7 @@ class Border(pygame.sprite.Sprite):
 
 class Player(pygame.sprite.Sprite):
     image1 = load_image("player_sprite.png")
-    image = pygame.transform.scale(image1, (100, 100))
+    image = pygame.transform.scale(image1, (100, 50))
     image.convert_alpha()
     def __init__(self, pos, *group):
         super().__init__(*group)
@@ -118,15 +118,14 @@ while running:
             Enemy(all_sprites, enemy_sprites)
         if event.type == pygame.MOUSEMOTION:
             player_sprite.update(event)
-            print(a)
     timer += 1
     a = str(round(timer / fps, 1))
     text = font.render(a, 1, (0, 0, 0))
-    screen.blit(text, (text_x, text_y))
+
     screen.blit(background, (0, 0))
     all_sprites.draw(screen)
     all_sprites.update()
     clock.tick(fps)
-
+    screen.blit(text, (text_x, text_y))
     pygame.display.flip()
 pygame.quit()
