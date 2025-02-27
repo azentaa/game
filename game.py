@@ -1,3 +1,4 @@
+# библиотеки
 import pygame
 import os
 import sys
@@ -17,11 +18,14 @@ all_sprites = pygame.sprite.Group()
 
 
 # функции
+
+# выход из программы
 def terminate():
     pygame.quit()
     sys.exit()
 
 
+# функция для удобства
 def one_frame(a):
     text = font.render(a, 1, (0, 0, 0))
     screen.blit(background, (0, 0))
@@ -32,6 +36,7 @@ def one_frame(a):
     pygame.display.flip()
 
 
+# установка параметров текста таймера
 def text_set():
     font = pygame.font.Font(None, 50)
     text = font.render(str(round(timer / fps, 1)), 1, (100, 255, 100))
@@ -40,6 +45,7 @@ def text_set():
     screen.blit(text, (text_x, text_y))
 
 
+# обработка изображений
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     if not os.path.isfile(fullname):
@@ -49,6 +55,7 @@ def load_image(name, colorkey=None):
     return image
 
 
+# начальный экран
 def start_screen():
     intro_text = ["Игра в рыбку", "",
                   "Правила игры",
@@ -79,6 +86,7 @@ def start_screen():
         clock.tick(fps)
 
 
+# конечный экран
 def end_screen(score):
     intro_text = ["Вы столкнулись с медузой!", "",
                   "Ваш счет:",
@@ -109,12 +117,12 @@ def end_screen(score):
 
 
 # классы
+
+# класс врага
 class Enemy(pygame.sprite.Sprite):
     image1 = load_image("enemy.png")
     image = pygame.transform.scale(image1, (350, 50))
     image.convert_alpha()
-
-    # image_boom = load_image("boom.png")
 
     def __init__(self, *group):
         super().__init__(*group)
@@ -122,7 +130,7 @@ class Enemy(pygame.sprite.Sprite):
         self.cut_sheet(self.image, 4, 1)
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
-        self.rect = self.rect.move(width - 300, randrange(height))
+        self.rect = self.rect.move(width, randrange(height - 100))
 
         # self.image = Enemy.image
         # self.rect = self.image.get_rect()
@@ -140,11 +148,13 @@ class Enemy(pygame.sprite.Sprite):
                     frame_location, self.rect.size)))
 
     def update(self, *args):
+        #
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
         self.rect = self.rect.move(-10, 0)
 
 
+# класс границ
 class Border(pygame.sprite.Sprite):
     def __init__(self, x1, y1, x2, y2):
         super().__init__(all_sprites)
@@ -158,6 +168,7 @@ class Border(pygame.sprite.Sprite):
             self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
 
 
+# класс игрока
 class Player(pygame.sprite.Sprite):
     image1 = load_image("player.png")
     image = pygame.transform.scale(image1, (384, 46))
@@ -186,29 +197,25 @@ class Player(pygame.sprite.Sprite):
                     frame_location, self.rect.size)))
 
     def update(self, *args):
+        # смена кадров
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
         self.image = self.frames[self.cur_frame]
+        # управление и ограничение
         if args and args[0].type == pygame.MOUSEMOTION:
             self.rect.y = args[0].pos[1]
         if self.rect.y > width - 200:
             self.rect.y = width - 210
         if self.rect.y < 10:
             self.rect.y = 10
+        # обработка коллизии с врагом
         if pygame.sprite.spritecollideany(self, enemy_sprites):
             global game_end
             game_end = True
 
 
+# переменные и константы
 background = load_image("background.png")
-Border(10, 10, width - 10, 10)
-Border(10, height - 10, width - 10, height - 10)
-Border(10, 10, 10, height - 10)
-Player(4, 1, 150, 100, all_sprites, player_sprite)
-
-SPAWNENEMY = pygame.USEREVENT + 1
-pygame.time.set_timer(SPAWNENEMY, 1000)
-
-spawn_timer = randrange(1000, 3001, 500)
+spawn_timer = randrange(1000, 2001, 500)
 text_x = width - 150
 text_y = 50
 font = pygame.font.Font(None, 50)
@@ -217,6 +224,16 @@ timer = 0
 clock = pygame.time.Clock()
 score = ""
 
+# расставляем спрайты
+Border(10, 10, width - 10, 10)
+Border(10, height - 10, width - 10, height - 10)
+Border(10, 10, 10, height - 10)
+Player(4, 1, 150, 100, all_sprites, player_sprite)
+# событие спавна медузы
+SPAWNENEMY = pygame.USEREVENT + 1
+pygame.time.set_timer(SPAWNENEMY, spawn_timer)
+
+# триггеры
 running = True
 game_end = False
 
